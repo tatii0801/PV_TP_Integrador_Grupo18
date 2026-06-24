@@ -14,7 +14,7 @@ const ListaClientes = () => {
     const obtenerClientes = async () => {
       try {
         setLoading(true);
-        const respuesta = await fetch('https://fakestoreapi.com');
+        const respuesta = await fetch('https://fakestoreapi.com/users');
         
         if (!respuesta.ok) {
           throw new Error('Error de conexion');
