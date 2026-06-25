@@ -3,14 +3,13 @@ import { useState } from "react";
 import {
   Card,
   CardContent,
-  Typography,
   Grid,
   TextField,
   Button,
   Alert,
 } from "@mui/material";
 
-const FormAltaCliente = ({ setClientes }) => {
+const FormularioAltaCliente = ({ setClientes }) => {
   const [mensaje, setMensaje] = useState("");
 
   const [nuevoCliente, setNuevoCliente] = useState({
@@ -46,7 +45,7 @@ const FormAltaCliente = ({ setClientes }) => {
       const clienteAPI = {
         email: nuevoCliente.correo,
 
-        username: nuevoCliente.nombre.toLowerCase(),
+        username: nuevoCliente.nombre,
 
         password: "123456",
 
@@ -78,30 +77,29 @@ const FormAltaCliente = ({ setClientes }) => {
 
       const data = await respuesta.json();
 
-      setClientes((prev) => [
-        {
-          id: data.id,
+      let nuevoId = 1;
 
-          name: {
-            firstname: nuevoCliente.nombre,
+      //No repetir el ID que devuelve FakeStore (que muchas veces devuelve 1),
+      //  sino generar IDs consecutivos locales para mostrarlos
+      setClientes((prev) => {
+        const ultimoId =
+          prev.length > 0 ? Math.max(...prev.map((c) => Number(c.id) || 0)) : 0;
 
-            lastname: nuevoCliente.apellido,
-          },
+        nuevoId = ultimoId + 1;
 
-          email: nuevoCliente.correo,
+        const clienteNuevo = {
+          id: nuevoId,
 
-          phone: nuevoCliente.telefono,
+          reactKey: Date.now(),
 
-          address: {
-            city: nuevoCliente.ciudad,
-          },
-        },
+          ...clienteAPI,
+        };
+        
+        //ordena cuando se agrega un nuevo cliente al colocolar uno abajo del otro
+        return [...prev, clienteNuevo];
+      });
 
-        ...prev,
-      ]);
-
-      setMensaje(`Cliente agregado correctamente · ID ${data.id}`);
-
+      setMensaje(`Cliente agregado correctamente · ID ${nuevoId}`);
       setNuevoCliente({
         nombre: "",
         apellido: "",
@@ -119,10 +117,8 @@ const FormAltaCliente = ({ setClientes }) => {
   };
 
   return (
-    <Card className="formulario-card">
+    <Card className="animacion" elevation={0}>
       <CardContent>
-        <Typography className="formulario-titulo">Agregar Cliente</Typography>
-<hr />
         {mensaje && (
           <Alert
             severity={mensaje.includes("correctamente") ? "success" : "error"}
@@ -134,8 +130,8 @@ const FormAltaCliente = ({ setClientes }) => {
           </Alert>
         )}
 
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+        <Grid container spacing={3} className="formulario-grid">
+          <Grid xs={12} md={6}>
             <TextField
               fullWidth
               label="Nombre"
@@ -145,7 +141,7 @@ const FormAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid xs={12} md={6}>
             <TextField
               fullWidth
               label="Apellido"
@@ -155,7 +151,7 @@ const FormAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid xs={12} md={6}>
             <TextField
               fullWidth
               label="Correo Electrónico"
@@ -165,7 +161,7 @@ const FormAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid xs={12} md={6}>
             <TextField
               fullWidth
               label="Teléfono"
@@ -175,7 +171,7 @@ const FormAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <TextField
               fullWidth
               label="Ciudad"
@@ -185,13 +181,13 @@ const FormAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Button
               fullWidth
               variant="contained"
               size="large"
-              onClick={crearCliente}
               className="formulario-boton"
+              onClick={crearCliente}
             >
               Registrar Cliente
             </Button>
@@ -202,4 +198,4 @@ const FormAltaCliente = ({ setClientes }) => {
   );
 };
 
-export default FormAltaCliente;
+export default FormularioAltaCliente;

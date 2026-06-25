@@ -271,3 +271,43 @@ body {
     transform: none;
   }
 }
+
+/* ---------- SECCIONES ---------- */
+
+.card-seccion {
+  animation: aparecer .4s ease;
+
+  margin-bottom: 35px;
+}
+
+/* ---------- INPUT MUI ---------- */
+
+.MuiOutlinedInput-root {
+
+  border-radius: 14px !important;
+
+  background: white;
+
+}
+
+.MuiOutlinedInput-root:hover fieldset {
+
+  border-color: var(--color-secundario);
+
+}
+
+.MuiOutlinedInput-root.Mui-focused fieldset {
+
+  border-color: var(--color-principal) !important;
+
+}
+
+/* ---------- TITULOS SECUNDARIOS ---------- */
+
+.card-seccion h2 {
+
+  color: var(--color-principal);
+
+  margin-bottom: 20px;
+
+}
