@@ -8,10 +8,28 @@ import {
   Button,
   Alert,
   MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText,
 } from "@mui/material";
+
+const ciudades = [
+  "San Salvador de Jujuy",
+  "Palpalá",
+  "Yala",
+  "Perico",
+  "El Carmen",
+  "Libertador",
+  "Humahuaca",
+  "Tilcara",
+  "San Pedro",
+];
 
 const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
   const [mensaje, setMensaje] = useState("");
+
+  const [errores, setErrores] = useState({});
 
   const [nuevoCliente, setNuevoCliente] = useState({
     nombre: "",
@@ -24,47 +42,65 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    let nuevoValor = value;
+
+    if (name === "telefono") {
+      nuevoValor = value.replace(/\D/g, "");
+    }
+
     setNuevoCliente((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: nuevoValor,
+    }));
+
+    setErrores((prev) => ({
+      ...prev,
+      [name]: "",
     }));
   };
 
+  const validarFormulario = () => {
+    const nuevosErrores = {};
+
+    const soloLetras = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+
+    const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!nuevoCliente.nombre.trim()) {
+      nuevosErrores.nombre = "Campo obligatorio";
+    } else if (!soloLetras.test(nuevoCliente.nombre)) {
+      nuevosErrores.nombre = "Solo letras";
+    } else if (nuevoCliente.nombre.length < 3) {
+      nuevosErrores.nombre = "Mínimo 3 caracteres";
+    }
+
+    if (!nuevoCliente.apellido.trim()) {
+      nuevosErrores.apellido = "Campo obligatorio";
+    } else if (!soloLetras.test(nuevoCliente.apellido)) {
+      nuevosErrores.apellido = "Solo letras";
+    } else if (nuevoCliente.apellido.length < 3) {
+      nuevosErrores.apellido = "Mínimo 3 caracteres";
+    }
+
+    if (!email.test(nuevoCliente.correo)) {
+      nuevosErrores.correo = "Correo inválido";
+    }
+
+    if (nuevoCliente.telefono.length < 8 || nuevoCliente.telefono.length > 12) {
+      nuevosErrores.telefono = "Entre 8 y 12 números";
+    }
+
+    if (!nuevoCliente.ciudad) {
+      nuevosErrores.ciudad = "Seleccione una ciudad";
+    }
+
+    setErrores(nuevosErrores);
+
+    return Object.keys(nuevosErrores).length === 0;
+  };
+
   const crearCliente = async () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    const telefonoRegex = /^[0-9]{8,15}$/;
-
-    if (
-      !nuevoCliente.nombre.trim() ||
-      !nuevoCliente.apellido.trim() ||
-      !nuevoCliente.correo.trim() ||
-      !nuevoCliente.telefono.trim() ||
-      !nuevoCliente.ciudad
-    ) {
-      setMensaje("Complete todos los campos");
-      return;
-    }
-
-    if (nuevoCliente.nombre.length < 3) {
-      setMensaje("Nombre demasiado corto");
-      return;
-    }
-
-    if (nuevoCliente.apellido.length < 3) {
-      setMensaje("Apellido demasiado corto");
-      return;
-    }
-
-    if (!emailRegex.test(nuevoCliente.correo)) {
-      setMensaje("Correo inválido");
-      return;
-    }
-
-    if (!telefonoRegex.test(nuevoCliente.telefono)) {
-      setMensaje("Teléfono inválido");
-      return;
-    }
+    if (!validarFormulario()) return;
 
     try {
       const clienteAPI = {
@@ -76,6 +112,7 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
 
         name: {
           firstname: nuevoCliente.nombre,
+
           lastname: nuevoCliente.apellido,
         },
 
@@ -100,31 +137,28 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
         throw new Error();
       }
 
-      const data = await respuesta.json();
-
       let nuevoId = 1;
 
-      //No repetir el ID que devuelve FakeStore (que muchas veces devuelve 1),
-      //  sino generar IDs consecutivos locales para mostrarlos
       setClientes((prev) => {
         const ultimoId =
           prev.length > 0 ? Math.max(...prev.map((c) => Number(c.id) || 0)) : 0;
 
         nuevoId = ultimoId + 1;
 
-        const clienteNuevo = {
-          id: nuevoId,
+        return [
+          ...prev,
 
-          reactKey: Date.now(),
+          {
+            id: nuevoId,
 
-          ...clienteAPI,
-        };
+            reactKey: Date.now(),
 
-        //ordena cuando se agrega un nuevo cliente al colocolar uno abajo del otro
-        return [...prev, clienteNuevo];
+            ...clienteAPI,
+          },
+        ];
       });
 
-      setMensaje(`Cliente agregado correctamente`); //· ID ${nuevoId}
+      setMensaje(" ✅ Cliente agregado correctamente");
 
       setNuevoCliente({
         nombre: "",
@@ -134,8 +168,11 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
         ciudad: "",
       });
 
+      setErrores({});
+
       setTimeout(() => {
         setMensaje("");
+
         cerrarFormulario();
       }, 1500);
     } catch {
@@ -143,27 +180,15 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
     }
   };
 
-  const ciudades = [
-    "San Salvador de Jujuy",
-    "Palpalá",
-    "Yala",
-    "Perico",
-    "El Carmen",
-    "Libertador",
-    "Humahuaca",
-    "Tilcara",
-    "San Pedro",
-  ];
-
   return (
-    <Card className="animacion" elevation={0}>
+    <Card elevation={0}>
       <CardContent>
         {mensaje && (
           <Alert
             severity={mensaje.includes("correctamente") ? "success" : "error"}
-            className={
-              mensaje.includes("correctamente") ? "alerta-ok" : "alerta-error"
-            }
+            sx={{
+              mb: 3,
+            }}
           >
             {mensaje}
           </Alert>
@@ -177,6 +202,8 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
               name="nombre"
               value={nuevoCliente.nombre}
               onChange={handleChange}
+              error={!!errores.nombre}
+              helperText={errores.nombre}
             />
           </Grid>
 
@@ -187,51 +214,78 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
               name="apellido"
               value={nuevoCliente.apellido}
               onChange={handleChange}
+              error={!!errores.apellido}
+              helperText={errores.apellido}
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Correo Electrónico"
+              label="Correo Electrónico ✉️"
               name="correo"
               value={nuevoCliente.correo}
               onChange={handleChange}
+              error={!!errores.correo}
+              sx={{
+                minWidth: 300, // ancho del cuadro cerrado
+              }}
+              helperText={errores.correo}
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             <TextField
               fullWidth
-              label="Teléfono"
+              label="Teléfono 📞"
               name="telefono"
               value={nuevoCliente.telefono}
               onChange={handleChange}
+              error={!!errores.telefono}
+              helperText={errores.telefono}
             />
           </Grid>
 
-          <Grid item xs={12} md={12}>
-            <TextField
-              select
+          <Grid item xs={12}>
+            <FormControl
               fullWidth
-              label="Selecciona la Ciudad"
-              name="ciudad"
-              value={nuevoCliente.ciudad}
-              onChange={handleChange}
+              error={!!errores.ciudad}
               sx={{
-                minWidth: 240,
+                minWidth: 240, // ancho del cuadro cerrado
               }}
-
             >
-              {ciudades.map((c) => (
-                <MenuItem key={c} value={c}>
-                  {c}
-                </MenuItem>
-              ))}
-            </TextField>
+              <InputLabel>Selecciona la Ciudad</InputLabel>
+
+              <Select
+                name="ciudad"
+                value={nuevoCliente.ciudad}
+                label="Selecciona la Ciudad"
+                onChange={handleChange}
+                sx={{
+                  minHeight: 58,
+                  borderRadius: "14px",
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    sx: {
+                      width: 420,
+                      maxHeight: 300,
+                    },
+                  },
+                }}
+              >
+                {ciudades.map((ciudad) => (
+                  <MenuItem key={ciudad} value={ciudad}>
+                    {ciudad}
+                  </MenuItem>
+                ))}
+              </Select>
+
+              <FormHelperText>{errores.ciudad}</FormHelperText>
+            </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12}>
             <Button
               fullWidth
               variant="contained"

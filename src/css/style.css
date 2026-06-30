@@ -414,3 +414,81 @@ body {
     width: 100%;
   }
 }
+
+/* ===== MODO OSCURO ===== */
+
+body.modo-oscuro {
+  background: linear-gradient(180deg, #121212, #1a1a1a);
+
+  color: #ffffff;
+}
+
+/* HEADER */
+
+body.modo-oscuro header,
+body.modo-oscuro .header,
+body.modo-oscuro .MuiAppBar-root {
+  background: #181818 !important;
+
+  color: white !important;
+}
+
+body.modo-oscuro .MuiToolbar-root,
+body.modo-oscuro .MuiTypography-root {
+  color: white !important;
+}
+
+/* CARDS */
+
+body.modo-oscuro .formulario-card,
+body.modo-oscuro .buscador-card,
+body.modo-oscuro .tabla-card,
+body.modo-oscuro .MuiPaper-root {
+  background: #1f1f1f !important;
+
+  color: white !important;
+}
+
+/* INPUTS */
+
+body.modo-oscuro .MuiOutlinedInput-root {
+  background: #2a2a2a !important;
+
+  color: white !important;
+}
+
+body.modo-oscuro .MuiInputLabel-root {
+  color: #d6d6d6 !important;
+}
+
+body.modo-oscuro .MuiOutlinedInput-input {
+  color: white !important;
+}
+
+body.modo-oscuro .MuiOutlinedInput-notchedOutline {
+  border-color: #666 !important;
+}
+
+/* TABLA */
+
+body.modo-oscuro .MuiTableCell-root {
+  color: white !important;
+}
+
+body.modo-oscuro .tabla-header {
+  background: linear-gradient(90deg, #0f172a, #1d4ed8);
+}
+
+/* MODAL */
+
+body.modo-oscuro .MuiDialog-paper {
+  background: #202020 !important;
+
+  color: white !important;
+}
+
+/* BOTONES */
+
+body.modo-oscuro .MuiButton-root {
+  color: white;
+}
