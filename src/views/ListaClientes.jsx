@@ -6,7 +6,8 @@ import "../css/style.css";
 
 import { 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
-  TextField, CircularProgress, Alert, Typography, Box, Container 
+  TextField, CircularProgress, Alert, Typography, Box, Container,
+  Button, Dialog, DialogTitle, DialogContent,
 } from '@mui/material';
 
 const ListaClientes = () => {
@@ -17,6 +18,8 @@ const ListaClientes = () => {
   const [error, setError] = useState(null);
 
   const [busqueda, setBusqueda] = useState("");
+
+  const [abrirFormulario, setAbrirFormulario] = useState(false);
 
   useEffect(() => {
     const obtenerClientes = async () => {
@@ -84,11 +87,46 @@ const ListaClientes = () => {
 
       {/* FORMULARIO */}
 
-      <div className="formulario-card">
-        <div className="formulario-titulo">Agregar Cliente</div>
+      {/* ALTA CLIENTE */}
 
-        <FormularioAltaCliente setClientes={setClientes} />
+      <div className="formulario-card">
+        <div className="formulario-titulo">
+          <h2>Agregar Cliente</h2>
+
+          <p>Registrar nuevos clientes en la base de datos</p>
+        </div>
+
+        <Button
+          variant="contained"
+          className="formulario-boton"
+          onClick={() => setAbrirFormulario(true)}
+        >
+          + Nuevo Cliente
+        </Button>
       </div>
+
+      {/* MODAL */}
+
+      <Dialog
+        open={abrirFormulario}
+        onClose={() => setAbrirFormulario(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          Alta de Cliente
+          <div className="modal-subtitulo">
+            Complete los datos para registrar un nuevo cliente
+          </div>
+        </DialogTitle>
+
+        <DialogContent>
+          <FormularioAltaCliente
+            setClientes={setClientes}
+            cerrarFormulario={() => setAbrirFormulario(false)}
+          />
+        </DialogContent>
+      </Dialog>
 
       {/* BUSCADOR */}
 
@@ -112,9 +150,9 @@ const ListaClientes = () => {
         <Table>
           <TableHead className="tabla-header">
             <TableRow>
-              <TableCell>
+              {/*<TableCell>
                 <strong>ID</strong>
-              </TableCell>
+              </TableCell>*/}
 
               <TableCell>
                 <strong>Nombre Completo</strong>
@@ -141,8 +179,7 @@ const ListaClientes = () => {
                   key={cliente.reactKey || cliente.id}
                   className="tabla-fila"
                 >
-
-                  <TableCell>{cliente.id}</TableCell>
+                  {/*<TableCell>{cliente.id}</TableCell>*/}
 
                   <TableCell>
                     {cliente.name?.firstname} {cliente.name?.lastname}
