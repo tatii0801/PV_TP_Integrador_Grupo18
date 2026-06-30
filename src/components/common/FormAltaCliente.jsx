@@ -7,9 +7,10 @@ import {
   TextField,
   Button,
   Alert,
+  MenuItem,
 } from "@mui/material";
 
-const FormularioAltaCliente = ({ setClientes }) => {
+const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
   const [mensaje, setMensaje] = useState("");
 
   const [nuevoCliente, setNuevoCliente] = useState({
@@ -30,14 +31,38 @@ const FormularioAltaCliente = ({ setClientes }) => {
   };
 
   const crearCliente = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const telefonoRegex = /^[0-9]{8,15}$/;
+
     if (
       !nuevoCliente.nombre.trim() ||
       !nuevoCliente.apellido.trim() ||
       !nuevoCliente.correo.trim() ||
       !nuevoCliente.telefono.trim() ||
-      !nuevoCliente.ciudad.trim()
+      !nuevoCliente.ciudad
     ) {
       setMensaje("Complete todos los campos");
+      return;
+    }
+
+    if (nuevoCliente.nombre.length < 3) {
+      setMensaje("Nombre demasiado corto");
+      return;
+    }
+
+    if (nuevoCliente.apellido.length < 3) {
+      setMensaje("Apellido demasiado corto");
+      return;
+    }
+
+    if (!emailRegex.test(nuevoCliente.correo)) {
+      setMensaje("Correo inválido");
+      return;
+    }
+
+    if (!telefonoRegex.test(nuevoCliente.telefono)) {
+      setMensaje("Teléfono inválido");
       return;
     }
 
@@ -94,12 +119,13 @@ const FormularioAltaCliente = ({ setClientes }) => {
 
           ...clienteAPI,
         };
-        
+
         //ordena cuando se agrega un nuevo cliente al colocolar uno abajo del otro
         return [...prev, clienteNuevo];
       });
 
-      setMensaje(`Cliente agregado correctamente · ID ${nuevoId}`);
+      setMensaje(`Cliente agregado correctamente`); //· ID ${nuevoId}
+
       setNuevoCliente({
         nombre: "",
         apellido: "",
@@ -110,11 +136,24 @@ const FormularioAltaCliente = ({ setClientes }) => {
 
       setTimeout(() => {
         setMensaje("");
-      }, 4000);
+        cerrarFormulario();
+      }, 1500);
     } catch {
       setMensaje("No se pudo registrar el cliente");
     }
   };
+
+  const ciudades = [
+    "San Salvador de Jujuy",
+    "Palpalá",
+    "Yala",
+    "Perico",
+    "El Carmen",
+    "Libertador",
+    "Humahuaca",
+    "Tilcara",
+    "San Pedro",
+  ];
 
   return (
     <Card className="animacion" elevation={0}>
@@ -130,8 +169,8 @@ const FormularioAltaCliente = ({ setClientes }) => {
           </Alert>
         )}
 
-        <Grid container spacing={3} className="formulario-grid">
-          <Grid xs={12} md={6}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
             <TextField
               fullWidth
               label="Nombre"
@@ -141,7 +180,7 @@ const FormularioAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               fullWidth
               label="Apellido"
@@ -151,7 +190,7 @@ const FormularioAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               fullWidth
               label="Correo Electrónico"
@@ -161,7 +200,7 @@ const FormularioAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid xs={12} md={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               fullWidth
               label="Teléfono"
@@ -171,17 +210,28 @@ const FormularioAltaCliente = ({ setClientes }) => {
             />
           </Grid>
 
-          <Grid xs={12}>
+          <Grid item xs={12} md={12}>
             <TextField
+              select
               fullWidth
-              label="Ciudad"
+              label="Selecciona la Ciudad"
               name="ciudad"
               value={nuevoCliente.ciudad}
               onChange={handleChange}
-            />
+              sx={{
+                minWidth: 240,
+              }}
+
+            >
+              {ciudades.map((c) => (
+                <MenuItem key={c} value={c}>
+                  {c}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
 
-          <Grid xs={12}>
+          <Grid item xs={12} md={4}>
             <Button
               fullWidth
               variant="contained"
