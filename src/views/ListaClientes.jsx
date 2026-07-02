@@ -1,42 +1,53 @@
-import React, { useState, useEffect } from "react";
-
-import FormularioAltaCliente from "../components/common/FormAltaCliente";
-
+import React, { useState, useEffect, useMemo } from "react";
 import "../css/style.css";
-
-import { 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
-  TextField, CircularProgress, Alert, Typography, Box, Container,
-  Button, Dialog, DialogTitle, DialogContent,
-} from '@mui/material';
+import FormularioAltaCliente from "../components/common/FormAltaCliente";
+import {
+  TextField,
+  CircularProgress,
+  Alert,
+  Typography,
+  Box,
+  Container,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Card,
+  CardContent,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const ListaClientes = () => {
   const [clientes, setClientes] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState(null);
-
   const [busqueda, setBusqueda] = useState("");
-
   const [abrirFormulario, setAbrirFormulario] = useState(false);
 
   useEffect(() => {
     const obtenerClientes = async () => {
       try {
         setLoading(true);
-
+        setError(null);
         const respuesta = await fetch("https://fakestoreapi.com/users");
 
         if (!respuesta.ok) {
-          throw new Error("Error de conexión");
+          throw new Error(`Error del servidor: ${respuesta.status}`);
+        }
+
+        const contentType = respuesta.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("La API no devolvió un JSON válido.");
         }
 
         const datos = await respuesta.json();
-
         setClientes(datos);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "No se pudieron cargar los datos de los clientes.");
       } finally {
         setLoading(false);
       }
@@ -45,21 +56,21 @@ const ListaClientes = () => {
     obtenerClientes();
   }, []);
 
-  const clientesFiltrados = clientes.filter((cliente) => {
-    const texto = busqueda.toLowerCase();
+  const clientesFiltrados = useMemo(() => {
+    const texto = busqueda.toLowerCase().trim();
+    if (!texto) return clientes;
 
-    const apellido = cliente.name?.lastname?.toLowerCase() || "";
-
-    const ciudad = cliente.address?.city?.toLowerCase() || "";
-
-    return apellido.includes(texto) || ciudad.includes(texto);
-  });
+    return clientes.filter((cliente) => {
+      const apellido = cliente.name?.lastname?.toLowerCase() || "";
+      const ciudad = cliente.address?.city?.toLowerCase() || "";
+      return apellido.includes(texto) || ciudad.includes(texto);
+    });
+  }, [clientes, busqueda]);
 
   if (loading) {
     return (
       <Box className="cargando">
         <CircularProgress size={60} />
-
         <Typography className="cargando-texto">Cargando clientes...</Typography>
       </Box>
     );
@@ -77,35 +88,25 @@ const ListaClientes = () => {
 
   return (
     <Container maxWidth="lg" className="panel-clientes">
-      {/* TITULO */}
-
       <div className="panel-titulo">
         <h1>Panel de Clientes</h1>
-
         <p>Administración y gestión de clientes en tiempo real</p>
       </div>
-
-      {/* FORMULARIO */}
-
-      {/* ALTA CLIENTE */}
 
       <div className="formulario-card">
         <div className="formulario-titulo">
           <h2>Agregar Cliente</h2>
-
           <p>Registrar nuevos clientes en la base de datos</p>
         </div>
-
         <Button
           variant="contained"
+          startIcon={<AddIcon />}
           className="formulario-boton"
           onClick={() => setAbrirFormulario(true)}
         >
-          + Nuevo Cliente
+          Nuevo Cliente
         </Button>
       </div>
-
-      {/* MODAL */}
 
       <Dialog
         open={abrirFormulario}
@@ -119,7 +120,6 @@ const ListaClientes = () => {
             Complete los datos para registrar un nuevo cliente
           </div>
         </DialogTitle>
-
         <DialogContent>
           <FormularioAltaCliente
             setClientes={setClientes}
@@ -128,87 +128,98 @@ const ListaClientes = () => {
         </DialogContent>
       </Dialog>
 
-      {/* BUSCADOR */}
-
       <div className="buscador-card">
         <div className="buscador-titulo">Buscar Cliente</div>
-
         <TextField
           fullWidth
           label="Buscar por apellido o ciudad"
-          placeholder="Ej: Perez o San Salvador"
+          placeholder="Ej: Pérez o San Salvador"
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
         />
       </div>
 
-      {/* TABLA */}
-
       <div className="buscador-titulo">Lista de Clientes</div>
 
-      <TableContainer component={Paper} className="tabla-card">
-        <Table>
-          <TableHead className="tabla-header">
-            <TableRow>
-              {/*<TableCell>
-                <strong>ID</strong>
-              </TableCell>*/}
-
-              <TableCell>
-                <strong>Nombre Completo</strong>
-              </TableCell>
-
-              <TableCell>
-                <strong>Correo</strong>
-              </TableCell>
-
-              <TableCell>
-                <strong>Teléfono</strong>
-              </TableCell>
-
-              <TableCell>
-                <strong>Ciudad</strong>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {clientesFiltrados.length > 0 ? (
-              clientesFiltrados.map((cliente) => (
-                <TableRow
-                  key={cliente.reactKey || cliente.id}
-                  className="tabla-fila"
+      <Grid container spacing={3}>
+        {clientesFiltrados.length > 0 ? (
+          clientesFiltrados.map((cliente) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={cliente.id}>
+              <Card
+                className="cliente-card"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  minHeight: 220,
+                }}
+              >
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: 1,
+                  }}
                 >
-                  {/*<TableCell>{cliente.id}</TableCell>*/}
-
-                  <TableCell>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: "bold",
+                      textTransform: "capitalize",
+                      mb: 2,
+                    }}
+                  >
                     {cliente.name?.firstname} {cliente.name?.lastname}
-                  </TableCell>
+                  </Typography>
 
-                  <TableCell>{cliente.email}</TableCell>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                      flexGrow: 1,
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <EmailIcon fontSize="small" />
+                      <Typography variant="body2" noWrap>
+                        {cliente.email}
+                      </Typography>
+                    </Box>
 
-                  <TableCell>{cliente.phone}</TableCell>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <PhoneIcon fontSize="small" />
+                      <Typography variant="body2">{cliente.phone}</Typography>
+                    </Box>
 
-                  <TableCell>{cliente.address?.city}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5} align="center" className="tabla-vacia">
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <LocationOnIcon fontSize="small" />
+                      <Typography
+                        variant="body2"
+                        sx={{ textTransform: "capitalize" }}
+                      >
+                        {cliente.address?.city}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        ) : (
+          <Grid item xs={12}>
+            <Card className="cliente-card">
+              <CardContent>
+                <Typography align="center">
                   No se encontraron clientes
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
+      </Grid>
     </Container>
   );
 };
 
 export default ListaClientes;
-
-//para probar si funciona bien el boton para dr de alta
-
-//para probar si funciona bien el boton para dar de alta
-
