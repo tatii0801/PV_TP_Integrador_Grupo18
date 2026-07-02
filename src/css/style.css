@@ -1,0 +1,494 @@
+:root {
+  --color-principal: #1e3a5f;
+  --color-secundario: #2d6cdf;
+
+  --color-fondo: #f4f7fb;
+  --color-card: #ffffff;
+
+  --color-texto: #263238;
+  --color-texto-suave: #607d8b;
+
+  --color-borde: #dde6ef;
+
+  --color-exito: #2e7d32;
+  --color-error: #d32f2f;
+
+  --sombra: 0 8px 25px rgba(0, 0, 0, 0.08);
+
+  --radio: 18px;
+
+  --transicion: 0.3s ease;
+}
+
+/* ---------- BASE ---------- */
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #eef3fb, #f9fbff);
+
+  font-family:
+    Inter,
+    Segoe UI,
+    sans-serif;
+
+  color: var(--color-texto);
+}
+
+/* ---------- CONTENEDOR ---------- */
+
+.panel-clientes {
+  padding: 40px;
+}
+
+@media (max-width: 768px) {
+  .panel-clientes {
+    padding: 20px;
+  }
+}
+
+/* ---------- TITULOS ---------- */
+
+.panel-titulo {
+  text-align: center;
+
+  margin-bottom: 35px;
+}
+
+.panel-titulo h1 {
+  font-size: 38px;
+
+  margin: 0;
+
+  font-weight: 800;
+
+  color: var(--color-principal);
+}
+
+.panel-titulo p {
+  margin-top: 10px;
+
+  font-size: 16px;
+
+  color: var(--color-texto-suave);
+}
+
+/* ---------- FORMULARIO ---------- */
+
+/* ---------- AGREGAR CLIENTE ---------- */
+
+.formulario-card {
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+
+  border: 1px solid var(--color-borde);
+
+  border-radius: 22px;
+
+  padding: 38px;
+
+  margin-bottom: 40px;
+
+  box-shadow: var(--sombra);
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 20px;
+}
+
+.formulario-titulo {
+  display: flex;
+
+  flex-direction: column;
+}
+
+.formulario-titulo h2 {
+  margin: 0;
+
+  font-size: 34px;
+
+  font-weight: 800;
+
+  color: var(--color-principal);
+}
+
+.formulario-titulo p {
+  margin-top: 8px;
+
+  color: var(--color-texto-suave);
+
+  font-size: 16px;
+}
+
+/*
+.formulario-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+  gap: 22px;
+}*/
+
+.formulario-boton {
+  min-width: 250px !important;
+
+  height: 62px !important;
+
+  border-radius: 18px !important;
+
+  font-size: 19px !important;
+
+  font-weight: 700 !important;
+
+  text-transform: none !important;
+
+  background: linear-gradient(
+    90deg,
+    var(--color-principal),
+    var(--color-secundario)
+  ) !important;
+
+  box-shadow: 0 10px 30px rgba(45, 108, 223, 0.35) !important;
+
+  transition: var(--transicion);
+}
+
+.formulario-boton:hover {
+  transform: translateY(-5px);
+
+  box-shadow: 0 18px 40px rgba(45, 108, 223, 0.45) !important;
+}
+
+@media (max-width: 768px) {
+  .formulario-card {
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+
+  .formulario-boton {
+    width: 100%;
+  }
+}
+
+/* ---------- BUSCADOR ---------- */
+
+.buscador-card {
+  background: white;
+
+  padding: 25px;
+
+  border-radius: var(--radio);
+
+  box-shadow: var(--sombra);
+
+  margin-bottom: 35px;
+}
+
+.buscador-titulo {
+  font-size: 22px;
+
+  font-weight: 700;
+
+  margin-bottom: 20px;
+
+  color: var(--color-principal);
+}
+
+/* ---------- TABLA ---------- */
+
+.tabla-card {
+  overflow: hidden;
+
+  border-radius: var(--radio);
+
+  box-shadow: var(--sombra);
+
+  background: white;
+}
+
+.tabla-header {
+  background: linear-gradient(
+    90deg,
+    var(--color-principal),
+    var(--color-secundario)
+  );
+}
+
+.tabla-header th {
+  color: white !important;
+
+  font-size: 15px;
+
+  font-weight: 700 !important;
+}
+
+.tabla-fila {
+  transition: var(--transicion);
+}
+
+.tabla-fila:hover {
+  background: #f5f9ff;
+
+  transform: scale(1.005);
+}
+
+.tabla-vacia {
+  padding: 50px;
+
+  font-size: 18px;
+
+  color: var(--color-texto-suave);
+}
+
+/* ---------- ALERTAS ---------- */
+
+.alerta-ok {
+  margin-bottom: 25px !important;
+
+  border-radius: 14px !important;
+
+  font-weight: 700;
+}
+
+.alerta-error {
+  margin-bottom: 25px !important;
+
+  border-radius: 14px !important;
+}
+
+/* ---------- LOADER ---------- */
+
+.cargando {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  height: 70vh;
+
+  gap: 20px;
+}
+
+.cargando-texto {
+  font-size: 18px;
+
+  color: var(--color-texto-suave);
+}
+
+/* ---------- SCROLL ---------- */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b7c8dd;
+
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #88a6cb;
+}
+
+/* ---------- EFECTOS ---------- */
+
+.animacion {
+  animation: aparecer 0.5s ease;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- SECCIONES ---------- */
+
+.card-seccion {
+  animation: aparecer 0.4s ease;
+
+  margin-bottom: 35px;
+}
+
+/* ---------- INPUT MUI ---------- */
+
+.MuiOutlinedInput-root {
+  border-radius: 14px !important;
+
+  background: white;
+}
+
+.MuiOutlinedInput-root:hover fieldset {
+  border-color: var(--color-secundario);
+}
+
+.MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: var(--color-principal) !important;
+}
+
+/* ---------- TITULOS SECUNDARIOS ---------- */
+
+.card-seccion h2 {
+  color: var(--color-principal);
+
+  margin-bottom: 20px;
+}
+
+/* ---------- MODAL ALTA CLIENTE ---------- */
+
+.MuiDialogTitle-root {
+  background: linear-gradient(
+    90deg,
+    var(--color-principal),
+    var(--color-secundario)
+  );
+
+  color: white !important;
+
+  font-size: 38px !important;
+
+  font-weight: 800 !important;
+
+  text-align: left;
+
+  padding: 28px !important;
+
+  letter-spacing: 0.5px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.modal-subtitulo {
+  font-size: 15px;
+
+  opacity: 0.9;
+
+  margin-top: 8px;
+
+  font-weight: 400;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 768px) {
+  .panel-clientes {
+    padding: 20px;
+  }
+
+  .panel-titulo h1 {
+    font-size: 30px;
+  }
+
+  .formulario-card {
+    padding: 25px;
+  }
+
+  .buscador-card {
+    padding: 20px;
+  }
+
+  .tabla-card {
+    overflow-x: auto;
+  }
+
+  .MuiTableCell-root {
+    font-size: 13px !important;
+  }
+
+  .formulario-boton {
+    width: 100%;
+  }
+}
+
+/* ===== MODO OSCURO ===== */
+
+body.modo-oscuro {
+  background: linear-gradient(180deg, #121212, #1a1a1a);
+
+  color: #ffffff;
+}
+
+/* HEADER */
+
+body.modo-oscuro header,
+body.modo-oscuro .header,
+body.modo-oscuro .MuiAppBar-root {
+  background: #181818 !important;
+
+  color: white !important;
+}
+
+body.modo-oscuro .MuiToolbar-root,
+body.modo-oscuro .MuiTypography-root {
+  color: white !important;
+}
+
+/* CARDS */
+
+body.modo-oscuro .formulario-card,
+body.modo-oscuro .buscador-card,
+body.modo-oscuro .tabla-card,
+body.modo-oscuro .MuiPaper-root {
+  background: #1f1f1f !important;
+
+  color: white !important;
+}
+
+/* INPUTS */
+
+body.modo-oscuro .MuiOutlinedInput-root {
+  background: #2a2a2a !important;
+
+  color: white !important;
+}
+
+body.modo-oscuro .MuiInputLabel-root {
+  color: #d6d6d6 !important;
+}
+
+body.modo-oscuro .MuiOutlinedInput-input {
+  color: white !important;
+}
+
+body.modo-oscuro .MuiOutlinedInput-notchedOutline {
+  border-color: #666 !important;
+}
+
+/* TABLA */
+
+body.modo-oscuro .MuiTableCell-root {
+  color: white !important;
+}
+
+body.modo-oscuro .tabla-header {
+  background: linear-gradient(90deg, #0f172a, #1d4ed8);
+}
+
+/* MODAL */
+
+body.modo-oscuro .MuiDialog-paper {
+  background: #202020 !important;
+
+  color: white !important;
+}
+
+/* BOTONES */
+
+body.modo-oscuro .MuiButton-root {
+  color: white;
+}
