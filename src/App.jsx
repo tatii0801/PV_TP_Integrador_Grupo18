@@ -18,31 +18,26 @@ const RutasProtegidas = () => {
   const { admin } = useContext(AdminContext);
 
   // Redirigir si no inició sesión
-
   if (!admin) {
     return <Navigate to="/login" replace />;
   }
 
   return (
     <Routes>
-      {/* Inicio */}
 
+      {/* Inicio */}
       <Route path="/" element={<Navigate to="/clientes" replace />} />
 
       {/* Clientes */}
-
       <Route path="/clientes" element={<ListaClientes />} />
 
       {/* Alta Cliente */}
-
       <Route path="/clientes/nuevo" element={<div>Alta de Cliente</div>} />
 
       {/* Detalle Cliente */}
-
       <Route path="/clientes/:id" element={<div>Detalle Cliente</div>} />
 
       {/* Error */}
-
       <Route path="*" element={<div>Error 404 Página no encontrada</div>} />
     </Routes>
   );
@@ -51,34 +46,36 @@ const RutasProtegidas = () => {
 //APP
 
 const App = () => {
-  // Estado modo oscuro
 
+  // Estado modo oscuro
   const [modoOscuro, setModoOscuro] = useState(false);
 
   //CAMBIAR TEMA
-
   const cambiarTema = () => {
     document.body.classList.toggle("modo-oscuro");
 
     setModoOscuro((prev) => !prev);
   };
 
-  //RENDER
+  const Contenido = ({ modoOscuro, cambiarTema }) => {
+    const { admin } = useContext(AdminContext);
+
+    return (
+      <>
+        {admin && <Header modoOscuro={modoOscuro} cambiarTema={cambiarTema} />}
+
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/*" element={<RutasProtegidas />} />
+        </Routes>
+      </>
+    );
+  };
 
   return (
     <AdminProvider>
       <BrowserRouter>
-        {/* HEADER */}
-
-        <Header modoOscuro={modoOscuro} cambiarTema={cambiarTema} />
-
-        {/* RUTAS */}
-
-        <Routes>
-          <Route path="/login" element={<Login />} />
-
-          <Route path="/*" element={<RutasProtegidas />} />
-        </Routes>
+        <Contenido modoOscuro={modoOscuro} cambiarTema={cambiarTema} />
       </BrowserRouter>
     </AdminProvider>
   );
