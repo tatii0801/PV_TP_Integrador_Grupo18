@@ -207,3 +207,8 @@ const ListaClientes = () => {
 };
 
 export default ListaClientes;
+<<<<<<< Updated upstream
+=======
+
+//para probar si funciona bien el boton para dr de alta
+>>>>>>> Stashed changes
