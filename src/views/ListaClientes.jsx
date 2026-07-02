@@ -207,3 +207,5 @@ const ListaClientes = () => {
 };
 
 export default ListaClientes;
+
+//para probar si funciona bien el boton para dar de alta
