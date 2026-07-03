@@ -136,27 +136,35 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
       if (respuesta.status !== 200 && respuesta.status !== 201) {
         throw new Error();
       }
+let nuevoId = 1;
 
-      let nuevoId = 1;
+setClientes((prev) => {
+  const ultimoId =
+    prev.length > 0
+      ? Math.max(...prev.map((c) => Number(c.id) || 0))
+      : 0;
 
-      setClientes((prev) => {
-        const ultimoId =
-          prev.length > 0 ? Math.max(...prev.map((c) => Number(c.id) || 0)) : 0;
+  nuevoId = ultimoId + 1;
 
-        nuevoId = ultimoId + 1;
+  const clienteNuevo = {
+    id: nuevoId,
+    reactKey: Date.now(),
+    ...clienteAPI,
+  };
 
-        return [
-          ...prev,
+   
+  const clientesLocales =
+    JSON.parse(localStorage.getItem("clientesLocales")) || [];
 
-          {
-            id: nuevoId,
+  clientesLocales.push(clienteNuevo);
 
-            reactKey: Date.now(),
+  localStorage.setItem(
+    "clientesLocales",
+    JSON.stringify(clientesLocales)
+  );
 
-            ...clienteAPI,
-          },
-        ];
-      });
+  return [...prev, clienteNuevo];
+});
 
       setMensaje(" ✅ Cliente agregado correctamente");
 

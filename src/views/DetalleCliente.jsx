@@ -44,6 +44,21 @@ const DetalleCliente = () => {
   useEffect(() => {
     const obtenerCliente = async () => {
       try {
+        
+        const clientesLocales =
+          JSON.parse(localStorage.getItem("clientesLocales")) || [];
+
+        const clienteLocal = clientesLocales.find(
+          (cliente) => Number(cliente.id) === Number(id),
+        );
+
+        if (clienteLocal) {
+          setCliente(clienteLocal);
+          setLoading(false);
+          return;
+        }
+
+        
         const respuesta = await fetch(`https://fakestoreapi.com/users/${id}`);
 
         if (!respuesta.ok) {
@@ -79,6 +94,18 @@ const DetalleCliente = () => {
       if (!eliminados.includes(Number(id))) {
         eliminados.push(Number(id));
       }
+    
+      const clientesLocales =
+        JSON.parse(localStorage.getItem("clientesLocales")) || [];
+
+      const clientesActualizados = clientesLocales.filter(
+        (cliente) => Number(cliente.id) !== Number(id),
+      );
+
+      localStorage.setItem(
+        "clientesLocales",
+        JSON.stringify(clientesActualizados),
+      );
 
       localStorage.setItem("clientesEliminados", JSON.stringify(eliminados));
 
