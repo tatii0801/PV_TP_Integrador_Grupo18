@@ -26,7 +26,7 @@ const ciudades = [
   "San Pedro",
 ];
 
-const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
+const FormularioAltaCliente = ({ onClienteCreado, cerrarFormulario }) => {
   const [mensaje, setMensaje] = useState("");
 
   const [errores, setErrores] = useState({});
@@ -101,6 +101,26 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
 
   const crearCliente = async () => {
     if (!validarFormulario()) return;
+    const clientesAPI = await fetch("https://fakestoreapi.com/users")
+      .then((r) => r.json());
+
+    const clientesLocales =
+      JSON.parse(localStorage.getItem("clientesLocales")) || [];
+
+    const todosLosClientes = [...clientesAPI, ...clientesLocales];
+
+    const clienteDuplicado = todosLosClientes.some((cliente) => {
+      return (
+        cliente.email?.toLowerCase() ===
+        nuevoCliente.correo.toLowerCase() ||
+        cliente.phone === nuevoCliente.telefono
+      );
+    });
+
+    if (clienteDuplicado) {
+      setMensaje("Ya existe un cliente con ese correo o teléfono.");
+      return;
+    }
 
     try {
       const clienteAPI = {
@@ -136,35 +156,33 @@ const FormularioAltaCliente = ({ setClientes, cerrarFormulario }) => {
       if (respuesta.status !== 200 && respuesta.status !== 201) {
         throw new Error();
       }
-let nuevoId = 1;
+      const clientesLocales =
+        JSON.parse(localStorage.getItem("clientesLocales")) || [];
 
-setClientes((prev) => {
-  const ultimoId =
-    prev.length > 0
-      ? Math.max(...prev.map((c) => Number(c.id) || 0))
-      : 0;
+      let ultimoId = Number(localStorage.getItem("ultimoIdCliente"));
 
-  nuevoId = ultimoId + 1;
+      if (!ultimoId) {
+        ultimoId = Math.max(
+          10,
+          ...clientesLocales.map((c) => Number(c.id) || 0)
+        );
+      }
 
-  const clienteNuevo = {
-    id: nuevoId,
-    reactKey: Date.now(),
-    ...clienteAPI,
-  };
+      ultimoId++;
 
-   
-  const clientesLocales =
-    JSON.parse(localStorage.getItem("clientesLocales")) || [];
+      localStorage.setItem("ultimoIdCliente", ultimoId);
 
-  clientesLocales.push(clienteNuevo);
+      const clienteNuevo = {
+        id: ultimoId,
+        ...clienteAPI,
+      };
 
-  localStorage.setItem(
-    "clientesLocales",
-    JSON.stringify(clientesLocales)
-  );
+      clientesLocales.push(clienteNuevo);
 
-  return [...prev, clienteNuevo];
-});
+      localStorage.setItem(
+        "clientesLocales",
+        JSON.stringify(clientesLocales)
+      );
 
       setMensaje(" ✅ Cliente agregado correctamente");
 
@@ -178,8 +196,12 @@ setClientes((prev) => {
 
       setErrores({});
 
-      setTimeout(() => {
+      setTimeout(async () => {
         setMensaje("");
+
+        if (onClienteCreado) {
+          await onClienteCreado();
+        }
 
         cerrarFormulario();
       }, 1500);

@@ -51,13 +51,17 @@ const Dashboard = () => {
         }
 
         const datos = await respuesta.json();
+        const clientesLocales =
+  JSON.parse(localStorage.getItem("clientesLocales")) || [];
+
+const todosLosClientes = [...datos, ...clientesLocales];
 
         const eliminados =
           JSON.parse(localStorage.getItem("clientesEliminados")) || [];
 
-        const clientesVisibles = datos.filter(
-          (cliente) => !eliminados.includes(cliente.id)
-        );
+        const clientesVisibles = todosLosClientes.filter(
+  (cliente) => !eliminados.includes(Number(cliente.id))
+);
 
         setClientes(clientesVisibles);
       } catch {

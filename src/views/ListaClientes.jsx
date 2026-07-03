@@ -40,8 +40,12 @@ const ListaClientes = () => {
 
   useEffect(() => {
     obtenerClientes();
+    
   }, []);
-
+const actualizarListaClientes = async () => {
+  await obtenerClientes();
+  setAbrirFormulario(false);
+};
   const obtenerClientes = async () => {
     try {
       setLoading(true);
@@ -53,21 +57,30 @@ const ListaClientes = () => {
         throw new Error(`Error del servidor: ${respuesta.status}`);
       }
 
-      const datos = await respuesta.json();
 
-      const clientesLocales =
-        JSON.parse(localStorage.getItem("clientesLocales")) || [];
 
-      const todosLosClientes = [...datos, ...clientesLocales];
+const datos = await respuesta.json();
 
-      const eliminados =
-        JSON.parse(localStorage.getItem("clientesEliminados")) || [];
+const clientesLocales =
+  JSON.parse(localStorage.getItem("clientesLocales")) || [];
 
-      const clientesVisibles = todosLosClientes.filter(
-        (cliente) => !eliminados.includes(Number(cliente.id)),
-      );
+// Unificar clientes evitando duplicados por ID
+const mapaClientes = new Map();
 
-      setClientes(clientesVisibles);
+[...datos, ...clientesLocales].forEach((cliente) => {
+  mapaClientes.set(Number(cliente.id), cliente);
+});
+
+const todosLosClientes = [...mapaClientes.values()];
+
+const eliminados =
+  JSON.parse(localStorage.getItem("clientesEliminados")) || [];
+
+const clientesVisibles = todosLosClientes.filter(
+  (cliente) => !eliminados.includes(Number(cliente.id)),
+);
+
+setClientes(clientesVisibles);
     } catch (err) {
       setError(err.message || "No se pudieron cargar los clientes.");
     } finally {
@@ -150,24 +163,10 @@ const ListaClientes = () => {
         <DialogTitle>Alta de Cliente</DialogTitle>
 
         <DialogContent>
-          <FormularioAltaCliente
-            setClientes={(actualizarClientes) => {
-              setClientes((clientesActuales) => {
-                const nuevosClientes =
-                  typeof actualizarClientes === "function"
-                    ? actualizarClientes(clientesActuales)
-                    : actualizarClientes;
-
-                const eliminados =
-                  JSON.parse(localStorage.getItem("clientesEliminados")) || [];
-
-                return nuevosClientes.filter(
-                  (cliente) => !eliminados.includes(Number(cliente.id)),
-                );
-              });
-            }}
-            cerrarFormulario={() => setAbrirFormulario(false)}
-          />
+   <FormularioAltaCliente
+  onClienteCreado={actualizarListaClientes}
+  cerrarFormulario={() => setAbrirFormulario(false)}
+/>
         </DialogContent>
       </Dialog>
 
