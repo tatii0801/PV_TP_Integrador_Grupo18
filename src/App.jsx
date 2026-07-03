@@ -1,81 +1,134 @@
 import React, { useContext, useState } from "react";
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 
-//CONTEXTO
+// CONTEXTO
 import { AdminProvider, AdminContext } from "./context/AdminContext";
 
-//LAYOUT
+// LAYOUT
 import Header from "./components/layout/Header";
 
-//VISTAS
+// VISTAS
 import Login from "./views/Login";
-
 import ListaClientes from "./views/ListaClientes";
-
-//RUTAS PROTEGIDAS
+import DetalleCliente from "./views/DetalleCliente";
+import Dashboard from "./views/Dashboard";
+import Footer from "./components/layout/Footer";
+// RUTAS PROTEGIDAS
 const RutasProtegidas = () => {
   const { admin } = useContext(AdminContext);
 
-  // Redirigir si no inició sesión
+  const location = useLocation();
+
+  const backgroundLocation = location.state?.backgroundLocation;
+
   if (!admin) {
     return <Navigate to="/login" replace />;
   }
 
   return (
-    <Routes>
+    <>
+      <Routes location={backgroundLocation || location}>
+ <Route
+  path="/"
+  element={<Navigate to="/dashboard" replace />}
+/>
+<Route
+  path="/dashboard"
+  element={<Dashboard />}
+/>
 
-      {/* Inicio */}
-      <Route path="/" element={<Navigate to="/clientes" replace />} />
+        <Route
+          path="/clientes"
+          element={<ListaClientes />}
+        />
 
-      {/* Clientes */}
-      <Route path="/clientes" element={<ListaClientes />} />
+        <Route
+          path="/clientes/nuevo"
+          element={<div>Alta de Cliente</div>}
+        />
 
-      {/* Alta Cliente */}
-      <Route path="/clientes/nuevo" element={<div>Alta de Cliente</div>} />
+        <Route
+          path="/clientes/:id"
+          element={<DetalleCliente />}
+        />
 
-      {/* Detalle Cliente */}
-      <Route path="/clientes/:id" element={<div>Detalle Cliente</div>} />
+        <Route
+          path="*"
+          element={<div>Error 404 Página no encontrada</div>}
+        />
+      </Routes>
 
-      {/* Error */}
-      <Route path="*" element={<div>Error 404 Página no encontrada</div>} />
-    </Routes>
+      {backgroundLocation && (
+        <Routes>
+          <Route
+            path="/clientes/:id"
+            element={<DetalleCliente />}
+          />
+        </Routes>
+      )}
+    </>
   );
 };
 
-//APP
+// APP
 
 const App = () => {
-
-  // Estado modo oscuro
   const [modoOscuro, setModoOscuro] = useState(false);
 
-  //CAMBIAR TEMA
   const cambiarTema = () => {
     document.body.classList.toggle("modo-oscuro");
 
     setModoOscuro((prev) => !prev);
   };
 
-  const Contenido = ({ modoOscuro, cambiarTema }) => {
+  const Contenido = ({
+    modoOscuro,
+    cambiarTema,
+  }) => {
     const { admin } = useContext(AdminContext);
 
     return (
-      <>
-        {admin && <Header modoOscuro={modoOscuro} cambiarTema={cambiarTema} />}
+<>
+  {admin && (
+    <Header
+      modoOscuro={modoOscuro}
+      cambiarTema={cambiarTema}
+    />
+  )}
 
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/*" element={<RutasProtegidas />} />
-        </Routes>
-      </>
+  <Routes>
+
+    <Route
+      path="/login"
+      element={<Login />}
+    />
+
+    <Route
+      path="/*"
+      element={<RutasProtegidas />}
+    />
+
+  </Routes>
+
+  {admin && <Footer />}
+</>
     );
   };
 
   return (
     <AdminProvider>
       <BrowserRouter>
-        <Contenido modoOscuro={modoOscuro} cambiarTema={cambiarTema} />
+        <Contenido
+          modoOscuro={modoOscuro}
+          cambiarTema={cambiarTema}
+        />
       </BrowserRouter>
     </AdminProvider>
   );
