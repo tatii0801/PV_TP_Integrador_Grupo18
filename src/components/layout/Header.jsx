@@ -1,6 +1,5 @@
 import { useContext } from "react";
-
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import {
   AppBar,
@@ -13,72 +12,107 @@ import {
 } from "@mui/material";
 
 import { AdminContext } from "../../context/AdminContext";
+import Nav from "./Nav";
 
 const Header = ({ modoOscuro, cambiarTema }) => {
-  const { admin, cerrarSesion } = useContext(AdminContext);
+  const { admin, cerrarSesion } =
+    useContext(AdminContext);
 
   const navigate = useNavigate();
-
-  //================ CERRAR SESION ================
+  const location = useLocation();
 
   const salir = () => {
     cerrarSesion();
-
     navigate("/login");
   };
 
-  //================ RENDER ================
+  let tituloSeccion = "Dashboard";
+
+  if (
+    location.pathname === "/" ||
+    location.pathname === "/dashboard"
+  ) {
+    tituloSeccion = "Dashboard";
+  } else if (
+    location.pathname === "/clientes"
+  ) {
+    tituloSeccion = "Clientes";
+  } else if (
+    location.pathname.startsWith("/clientes/")
+  ) {
+    tituloSeccion = "Detalle del Cliente";
+  }
 
   return (
     <AppBar position="static">
       <Toolbar>
-        {/*================ TITULO =================*/}
-
-        <Typography
-          variant="h6"
+        {/* TITULO + SUBTITULO */}
+        <Box
           sx={{
             flexGrow: 1,
           }}
         >
-          Panel de Control de Clientes
-        </Typography>
+          <Typography variant="h6">
+            Panel de Control de Clientes
+          </Typography>
 
-        {/*================ PANEL DERECHO =================*/}
+          <Typography
+            variant="body2"
+            sx={{
+              opacity: 0.85,
+            }}
+          >
+            {tituloSeccion}
+          </Typography>
+        </Box>
 
-        <Box display="flex" alignItems="center" gap={3}>
-          {/*================ BOTON MODO OSCURO =================*/}
-
+        {/* PANEL DERECHO */}
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={3}
+        >
           <FormControlLabel
             sx={{
               m: 0,
-
-              background: modoOscuro ? "#1f1f1f" : "#ffffff",
-
+              background: modoOscuro
+                ? "#1f1f1f"
+                : "#ffffff",
               borderRadius: "30px",
-
               padding: "4px 10px",
-
-              boxShadow: "0 6px 20px rgba(0,0,0,.15)",
+              boxShadow:
+                "0 6px 20px rgba(0,0,0,.15)",
             }}
-            control={<Switch checked={modoOscuro} onChange={cambiarTema} />}
+            control={
+              <Switch
+                checked={modoOscuro}
+                onChange={cambiarTema}
+              />
+            }
             label={modoOscuro ? "🌙" : "☀️"}
           />
 
-          {/*ADMIN*/}
+          <Box textAlign="right">
+            <Typography>
+              {admin.nombre}
+            </Typography>
 
-          <Typography>{admin.nombre}</Typography>
+            <Typography variant="body2">
+              {admin.sector}
+            </Typography>
+          </Box>
 
-          {/*SECTOR*/}
-
-          <Typography>{admin.sector}</Typography>
-
-          {/*BOTON SALIR*/}
-
-          <Button color="inherit" variant="outlined" onClick={salir}>
+          <Button
+            color="inherit"
+            variant="outlined"
+            onClick={salir}
+          >
             Cerrar Sesión
           </Button>
         </Box>
       </Toolbar>
+
+      <Nav />
     </AppBar>
   );
 };

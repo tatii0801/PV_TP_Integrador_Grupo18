@@ -24,7 +24,14 @@
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, #eef3fb, #f9fbff);
+
+  min-height: 100vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  background: linear-gradient(180deg,#eef3fb,#f9fbff);
 
   font-family:
     Inter,
@@ -492,7 +499,6 @@ body.modo-oscuro .MuiDialog-paper {
 body.modo-oscuro .MuiButton-root {
   color: white;
 }
-
 /* ================= FOOTER ================= */
 
 html,
