@@ -9,14 +9,16 @@ import {
   Box,
   Switch,
   FormControlLabel,
+  Avatar,
+  Paper,
+  Chip,
 } from "@mui/material";
 
 import { AdminContext } from "../../context/AdminContext";
 import Nav from "./Nav";
 
 const Header = ({ modoOscuro, cambiarTema }) => {
-  const { admin, cerrarSesion } =
-    useContext(AdminContext);
+  const { admin, cerrarSesion } = useContext(AdminContext);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,86 +30,55 @@ const Header = ({ modoOscuro, cambiarTema }) => {
 
   let tituloSeccion = "Dashboard";
 
-  if (
-    location.pathname === "/" ||
-    location.pathname === "/dashboard"
-  ) {
+  if (location.pathname === "/" || location.pathname === "/dashboard") {
     tituloSeccion = "Dashboard";
-  } else if (
-    location.pathname === "/clientes"
-  ) {
+  } else if (location.pathname === "/clientes") {
     tituloSeccion = "Clientes";
-  } else if (
-    location.pathname.startsWith("/clientes/")
-  ) {
+  } else if (location.pathname.startsWith("/clientes/")) {
     tituloSeccion = "Detalle del Cliente";
   }
 
   return (
-    <AppBar position="static">
-      <Toolbar>
-        {/* TITULO + SUBTITULO */}
-        <Box
-          sx={{
-            flexGrow: 1,
-          }}
-        >
-          <Typography variant="h6">
-            Panel de Control de Clientes
-          </Typography>
+    <AppBar position="sticky" elevation={0} className="header">
+      <Toolbar className="header-toolbar">
+        <Box className="header-titulo">
+          <Typography variant="h5">📊 Panel de Control de Clientes</Typography>
 
-          <Typography
-            variant="body2"
-            sx={{
-              opacity: 0.85,
-            }}
-          >
-            {tituloSeccion}
+          <Typography variant="body2">
+            Sistema de Gestión de Clientes • {tituloSeccion}
           </Typography>
         </Box>
 
-        {/* PANEL DERECHO */}
-        <Box
-          display="flex"
-          alignItems="center"
-          gap={3}
-        >
+        <Box className="header-derecha">
           <FormControlLabel
-            sx={{
-              m: 0,
-              background: modoOscuro
-                ? "#1f1f1f"
-                : "#ffffff",
-              borderRadius: "30px",
-              padding: "4px 10px",
-              boxShadow:
-                "0 6px 20px rgba(0,0,0,.15)",
-            }}
-            control={
-              <Switch
-                checked={modoOscuro}
-                onChange={cambiarTema}
-              />
-            }
+            className="header-switch"
+            control={<Switch checked={modoOscuro} onChange={cambiarTema} />}
             label={modoOscuro ? "🌙" : "☀️"}
           />
 
-          <Box textAlign="right">
-            <Typography>
-              {admin.nombre}
-            </Typography>
+          <Paper elevation={0} className="header-usuario">
+            <Avatar className="header-avatar">
+              {admin.nombre.charAt(0).toUpperCase()}
+            </Avatar>
 
-            <Typography variant="body2">
-              {admin.sector}
-            </Typography>
-          </Box>
+            <Box>
+              <Typography className="header-nombre">{admin.nombre}</Typography>
+
+              <Chip
+                size="small"
+                label={admin.sector}
+                color={admin.sector === "Gerencia" ? "warning" : "success"}
+              />
+            </Box>
+          </Paper>
 
           <Button
-            color="inherit"
-            variant="outlined"
+            variant="contained"
+            color="error"
+            className="header-salir"
             onClick={salir}
           >
-            Cerrar Sesión
+            Cerrar sesión
           </Button>
         </Box>
       </Toolbar>
