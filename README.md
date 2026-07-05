@@ -2,6 +2,8 @@
 
 ## Trabajo Práctico Integrador - Programación Visual
 
+Aplicación Web desarrollada con **React + Vite** para la administración de clientes, aplicando los conceptos trabajados durante la cursada de Programación Visual.
+
 ### React - Vite - Material UI - React Router - Context API - LocalStorage - FakeStoreAPI
 
 ---
@@ -30,119 +32,311 @@ Usuario GitHub: YesarelaFloresNavajas
 
 ---
 
-# Estructura del Proyecto
-
-## src/components/
-
-Contiene componentes reutilizables:
-
-### layout/
-
-* Header.jsx
-
-### common/
-
-* FormAltaCliente.jsx
-
----
-
-## src/context/
-
-Contiene el manejo del estado global:
-
-* AdminContext.jsx
-
----
-
-## src/views/
-
-Contiene las vistas principales:
-
-* Login.jsx
-* ListaClientes.jsx
-
----
-
-## src/css/
-
-Contiene los estilos CSS de la aplicación.
-
----
-
-## Archivos principales
-
-* App.jsx
-* main.jsx
-
----
-
 # Tecnologías Utilizadas
 
-* React
-* Vite
-* JavaScript
-* JSX
-* CSS
-* Material UI (MUI)
-* React Router DOM
-* Context API
-* LocalStorage
-* Fetch API
-* Node.js
-* npm
-* Git
-* GitHub
+- React
+- Vite
+- JavaScript
+- React Router DOM
+- Material UI
+- Context API
+- LocalStorage
+- Fetch API
+- FakeStoreAPI
+- CSS
+- Git
+- GitHub
 
 ---
 
 # Hooks Utilizados
 
-* useState
-* useEffect
-* useContext
+- useState
+- useEffect
+- useContext
+- useMemo
+
+---
+
+# Estructura del Proyecto
+
+```
+src/
+│
+├── components/
+│   ├── common/
+│   │   └── FormularioAltaCliente.jsx
+│   │
+│   └── layout/
+│       ├── Header.jsx
+│       ├── Nav.jsx
+│       └── Footer.jsx
+│
+├── context/
+│   └── AdminContext.jsx
+│
+├── views/
+│   ├── Login.jsx
+│   ├── Dashboard.jsx
+│   ├── ListaClientes.jsx
+│   └── DetalleCliente.jsx
+│
+├── css/
+│   └── style.css
+│
+├── App.jsx
+└── main.jsx
+```
+
+---
+
+# Objetivo
+
+Desarrollar una aplicación SPA para la gestión de clientes consumiendo una API REST, aplicando los contenidos vistos durante la cursada:
+
+- Componentes
+- JSX
+- Hooks
+- React Router
+- Context API
+- LocalStorage
+- Material UI
+- Consumo de APIs
+- Manejo de estados
+- Diseño Responsive
+
+---
+
+# Funcionalidades Implementadas
+
+## Inicio de Sesión
+
+Se desarrolló un sistema de autenticación utilizando Context API.
+
+Permite:
+
+- Iniciar sesión
+- Seleccionar sector
+- Mantener la sesión mediante LocalStorage
+- Cerrar sesión
+
+---
+
+## Protección de Rutas
+
+Se implementaron rutas protegidas utilizando React Router.
+
+Las vistas sólo pueden visualizarse si existe un administrador autenticado.
+
+---
+
+## Dashboard
+
+Se desarrolló un panel de estadísticas que muestra:
+
+- Total de clientes
+- Total de ciudades
+- Total de correos electrónicos
+- Total de teléfonos
+
+Además incorpora gráficos desarrollados con Recharts:
+
+- Gráfico de barras
+- Gráfico circular
+- Gráfico de líneas
+- Gráfico de áreas
+
+---
+
+## Gestión de Clientes
+
+La aplicación permite visualizar la lista completa de clientes obtenidos desde FakeStoreAPI.
+
+Cada tarjeta muestra:
+
+- Nombre
+- Email
+- Teléfono
+- Ciudad
+
+También permite acceder a la ficha completa del cliente.
+
+---
+
+## Buscador
+
+Se implementó un buscador dinámico utilizando useMemo.
+
+Permite buscar clientes por:
+
+- Apellido
+- Ciudad
+
+El filtrado se realiza en tiempo real.
+
+---
+
+## Alta de Clientes
+
+Se desarrolló un formulario completo para registrar nuevos clientes.
+
+Incluye validaciones para:
+
+- Nombre
+- Apellido
+- Correo electrónico
+- Teléfono
+- Ciudad
+
+También verifica que no existan clientes con:
+
+- Correo repetido
+- Teléfono repetido
+
+Si el registro es correcto:
+
+- Realiza un POST a FakeStoreAPI.
+- Genera un ID local consecutivo.
+- Guarda el cliente en LocalStorage.
+- Actualiza automáticamente la lista de clientes.
+
+---
+
+## Detalle del Cliente
+
+Cada cliente posee una vista individual que muestra:
+
+- Datos personales
+- Información de contacto
+- Dirección completa
+- Usuario
+- Contraseña
+
+---
+
+## Eliminación de Clientes
+
+Los administradores del sector **Gerencia** pueden eliminar clientes.
+
+Al eliminar:
+
+- Se realiza un DELETE a FakeStoreAPI.
+- Se registra el ID en LocalStorage.
+- El cliente deja de visualizarse en la aplicación.
+
+---
+
+## Estado Global
+
+Se implementó Context API para administrar:
+
+- Nombre del administrador
+- Sector
+- Inicio de sesión
+- Cierre de sesión
+
+---
+
+## Persistencia
+
+Se utiliza LocalStorage para almacenar:
+
+- Administrador autenticado
+- Clientes creados
+- Clientes eliminados
+- Último ID generado
+
+La sesión permanece activa incluso al recargar la página.
+
+---
+
+## Navegación
+
+La aplicación cuenta con:
+
+- Header dinámico
+- Barra de navegación
+- Footer
+- Cambio de título según la vista activa
+
+---
+
+## Modo Oscuro
+
+Se implementó un sistema de cambio de tema.
+
+Permite alternar entre:
+
+- Tema Claro
+- Tema Oscuro
+
+El cambio afecta a:
+
+- Header
+- Cards
+- Formularios
+- Tablas
+- Footer
+- Componentes Material UI
 
 ---
 
 # Consumo de API
 
-Se utiliza la API pública:
+API utilizada:
 
 https://fakestoreapi.com/users
 
-Operaciones implementadas hasta el momento:
+Operaciones implementadas:
 
-* GET
-* POST
+- GET
+- POST
+- DELETE
 
 ---
 
-# Comandos Utilizados
+# Rutas
 
-### Crear proyecto
+- /login
+- /dashboard
+- /clientes
+- /clientes/:id
+
+---
+
+# Comandos
+
+## Crear proyecto
 
 ```bash
 npm create vite@latest
 ```
 
-### Instalar dependencias
+## Instalar dependencias
 
 ```bash
 npm install
 ```
 
-### Instalar React Router
+## React Router
 
 ```bash
 npm install react-router-dom
 ```
 
-### Instalar Material UI
+## Material UI
 
 ```bash
 npm install @mui/material @emotion/react @emotion/styled
 ```
 
-### Ejecutar proyecto
+## Recharts
+
+```bash
+npm install recharts
+```
+
+## Ejecutar proyecto
 
 ```bash
 npm run dev
@@ -150,194 +344,23 @@ npm run dev
 
 ---
 
-# Objetivo del Trabajo
-
-Desarrollar un Panel de Control de Clientes utilizando React y Vite, aplicando los conceptos vistos durante la cursada mediante una aplicación SPA conectada a una API REST pública.
-
----
-
-# Descripción
-
-La aplicación permite administrar clientes consumiendo información desde FakeStoreAPI.
-
-Durante el desarrollo del proyecto se aplican conceptos relacionados con:
-
-* Componentes funcionales
-* JSX
-* Hooks
-* React Router
-* Context API
-* Estado global
-* Persistencia con LocalStorage
-* Consumo de API REST
-* Material UI
-* Manejo de estados de carga y errores
-
----
-
-# Funcionalidades Implementadas
-
-## Gestión de Administrador
-
-Se implementó un sistema de autenticación utilizando Context API.
-
-El administrador puede:
-
-* Iniciar sesión
-* Seleccionar su sector
-* Mantener la sesión mediante LocalStorage
-* Cerrar sesión
-
-Además, las rutas de la aplicación se encuentran protegidas mediante React Router.
-
----
-
-## Estado Global
-
-Se creó:
-
-```plaintext
-src/context/AdminContext.jsx
-```
-
-El contexto administra:
-
-* Nombre del administrador
-* Sector de la empresa
-
-Se implementaron las funciones:
-
-```js
-iniciarSesion()
-```
-
-```js
-cerrarSesion()
-```
-
----
-
-## Persistencia
-
-Se utiliza:
-
-```js
-useEffect()
-```
-
-junto con:
-
-```js
-localStorage
-```
-
-Cada cambio del administrador se almacena automáticamente.
-
-Al recargar la página (F5), la sesión permanece iniciada.
-
----
-
-## Encabezado Dinámico
-
-El componente Header muestra:
-
-* Nombre del administrador
-* Sector
-* Botón Cerrar Sesión
-
-Toda la información proviene directamente del Context API.
-
----
-
-## Consumo de FakeStoreAPI
-
-La aplicación obtiene los clientes mediante:
-
-```http
-GET https://fakestoreapi.com/users
-```
-
-Los datos se muestran en una tabla profesional desarrollada con Material UI.
-
-Cada cliente presenta:
-
-* ID
-* Nombre completo
-* Correo electrónico
-* Teléfono
-* Ciudad
-
----
-
-## Buscador Dinámico
-
-Se implementó un filtro en tiempo real que permite buscar clientes por:
-
-* Apellido
-* Ciudad
-
----
-
-## Estados de la Aplicación
-
-Durante el consumo de la API se controlan tres estados:
-
-### Carga
-
-Se muestra:
-
-* CircularProgress
-
----
-
-### Éxito
-
-Renderizado de la tabla de clientes.
-
----
-
-### Error
-
-Se informa mediante:
-
-* Alert de Material UI.
-
----
-
-## Alta de Clientes
-
-Se implementó un formulario que permite registrar nuevos clientes.
-
-La aplicación realiza una petición:
-
-```http
-POST https://fakestoreapi.com/users
-```
-
-Se envían los datos estructurados hacia la API.
-
-Cuando la operación finaliza correctamente:
-
-* Se informa mediante un Alert.
-* Se genera un ID local consecutivo para evitar duplicados visuales.
-* El nuevo cliente aparece inmediatamente en la tabla.
-
----
-
-# Rutas Implementadas
-
-Actualmente la aplicación utiliza las siguientes rutas:
-
-* /login
-* /clientes
-
-Además, se encuentran preparadas las rutas para futuras funcionalidades:
-
-* /clientes/:id
-* /clientes/nuevo
+# Características del Proyecto
+
+- SPA desarrollada con React.
+- Arquitectura basada en componentes.
+- Navegación mediante React Router.
+- Gestión de estado global con Context API.
+- Persistencia utilizando LocalStorage.
+- Consumo de API REST mediante Fetch.
+- Validaciones completas de formularios.
+- Diseño responsive.
+- Interfaz desarrollada con Material UI.
+- Dashboard con gráficos estadísticos.
+- Modo oscuro.
+- Gestión de clientes mediante operaciones CRUD parciales.
 
 ---
 
 # Conclusión
 
----
+Este proyecto permitió integrar los principales contenidos desarrollados durante la materia Programación Visual mediante la construcción de una aplicación web completa utilizando React, Vite, React Router, Context API, Material UI y consumo de APIs REST. Durante el desarrollo se aplicaron conceptos de componentes, manejo de estado, persistencia de datos, navegación, validaciones, diseño responsive y trabajo colaborativo con Git y GitHub.
