@@ -182,7 +182,7 @@ const ListaClientes = () => {
 
       <div className="buscador-titulo">Lista de Clientes</div>
 
-      <Grid container spacing={3} justifyContent="center">
+      <Grid container spacing={1} justifyContent="center">
         {clientesFiltrados.map((cliente) => (
           <Grid
             item
