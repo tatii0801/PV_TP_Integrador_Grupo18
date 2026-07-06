@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -10,7 +9,11 @@ import {
   MenuItem,
   Button,
   Box,
+  Alert,
+  Avatar,
 } from "@mui/material";
+
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 
 import { AdminContext } from "../context/AdminContext";
 
@@ -20,11 +23,38 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [nombre, setNombre] = useState("");
+  const [sector, setSector] = useState("");
 
-  const [sector, setSector] = useState("Soporte");
+  const [errores, setErrores] = useState({});
+
+  const formatearNombre = (texto) => {
+    return texto.toLowerCase().replace(/\b\w/g, (letra) => letra.toUpperCase());
+  };
+
+  const validar = () => {
+    let nuevo = {};
+
+    const nombreLimpio = nombre.trim();
+
+    if (!nombreLimpio) {
+      nuevo.nombre = "Ingrese su nombre";
+    } else if (nombreLimpio.length < 3) {
+      nuevo.nombre = "Debe tener al menos 3 caracteres";
+    } else if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]+$/.test(nombreLimpio)) {
+      nuevo.nombre = "Solo se permiten letras";
+    }
+
+    if (!sector) {
+      nuevo.sector = "Seleccione un sector";
+    }
+
+    setErrores(nuevo);
+
+    return Object.keys(nuevo).length === 0;
+  };
 
   const ingresar = () => {
-    if (!nombre.trim()) return;
+    if (!validar()) return;
 
     iniciarSesion({
       nombre,
@@ -35,25 +65,25 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 8 }}>
-      <Paper elevation={4} sx={{ p: 4 }}>
-        <Typography
-          variant="h4"
-          align="center"
-          gutterBottom
-        >
-          Inicio de Sesión
+    <Container maxWidth="sm" className="login-container">
+      <Paper className="login-card">
+        <Avatar className="login-avatar">
+          <AdminPanelSettingsIcon fontSize="large" />
+        </Avatar>
+
+        <Typography className="login-titulo">Inicio de Sesión</Typography>
+
+        <Typography className="login-subtitulo">
+          Sistema de Administración de Clientes
         </Typography>
 
-        <Box
-          display="flex"
-          flexDirection="column"
-          gap={3}
-        >
+        <Box className="login-form">
           <TextField
             label="Nombre del Administrador"
             value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
+            onChange={(e) => setNombre(formatearNombre(e.target.value))}
+            error={Boolean(errores.nombre)}
+            helperText={errores.nombre}
             fullWidth
           />
 
@@ -62,23 +92,20 @@ const Login = () => {
             label="Sector"
             value={sector}
             onChange={(e) => setSector(e.target.value)}
+            error={Boolean(errores.sector)}
+            helperText={errores.sector}
             fullWidth
           >
-            <MenuItem value="Soporte">
-              Soporte
-            </MenuItem>
-
-            <MenuItem value="Gerencia">
-              Gerencia
-            </MenuItem>
+            <MenuItem value="Soporte">Soporte</MenuItem>
+            <MenuItem value="Gerencia">Gerencia</MenuItem>
           </TextField>
 
           <Button
             variant="contained"
-            size="large"
+            className="login-boton"
             onClick={ingresar}
           >
-            Ingresar
+            Ingresar al Sistema
           </Button>
         </Box>
       </Paper>

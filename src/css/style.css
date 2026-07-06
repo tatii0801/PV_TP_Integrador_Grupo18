@@ -894,3 +894,71 @@ body.modo-oscuro .footer-redes .MuiIconButton-root:hover {
   font-weight: 600 !important;
   text-transform: none !important;
 }
+
+/*==========================
+LOGIN
+==========================*/
+
+.login-container{
+    min-height:80vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.login-card{
+    width:100%;
+    max-width:500px;
+    padding:45px;
+    border-radius:22px !important;
+    box-shadow:var(--sombra);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:25px;
+}
+
+.login-avatar{
+    width:85px !important;
+    height:85px !important;
+    background:linear-gradient(
+        135deg,
+        var(--color-principal),
+        var(--color-secundario)
+    ) !important;
+}
+
+.login-titulo{
+    font-size:34px !important;
+    font-weight:800 !important;
+    color:var(--color-principal);
+}
+
+.login-subtitulo{
+    color:var(--color-texto-suave);
+    text-align:center;
+}
+
+.login-form{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.login-boton{
+    height:58px !important;
+    border-radius:16px !important;
+    font-size:18px !important;
+    font-weight:700 !important;
+    text-transform:none !important;
+    background:linear-gradient(
+        90deg,
+        var(--color-principal),
+        var(--color-secundario)
+    ) !important;
+}
+
+.login-boton:hover{
+    transform:translateY(-3px);
+}
