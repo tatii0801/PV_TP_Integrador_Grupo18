@@ -20,6 +20,8 @@ import {
   CardContent,
   IconButton,
   Tooltip,
+  Avatar,
+  Chip,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -40,12 +42,11 @@ const ListaClientes = () => {
 
   useEffect(() => {
     obtenerClientes();
-    
   }, []);
-const actualizarListaClientes = async () => {
-  await obtenerClientes();
-  setAbrirFormulario(false);
-};
+  const actualizarListaClientes = async () => {
+    await obtenerClientes();
+    setAbrirFormulario(false);
+  };
   const obtenerClientes = async () => {
     try {
       setLoading(true);
@@ -57,30 +58,28 @@ const actualizarListaClientes = async () => {
         throw new Error(`Error del servidor: ${respuesta.status}`);
       }
 
+      const datos = await respuesta.json();
 
+      const clientesLocales =
+        JSON.parse(localStorage.getItem("clientesLocales")) || [];
 
-const datos = await respuesta.json();
+      // Unificar clientes evitando duplicados por ID
+      const mapaClientes = new Map();
 
-const clientesLocales =
-  JSON.parse(localStorage.getItem("clientesLocales")) || [];
+      [...datos, ...clientesLocales].forEach((cliente) => {
+        mapaClientes.set(Number(cliente.id), cliente);
+      });
 
-// Unificar clientes evitando duplicados por ID
-const mapaClientes = new Map();
+      const todosLosClientes = [...mapaClientes.values()];
 
-[...datos, ...clientesLocales].forEach((cliente) => {
-  mapaClientes.set(Number(cliente.id), cliente);
-});
+      const eliminados =
+        JSON.parse(localStorage.getItem("clientesEliminados")) || [];
 
-const todosLosClientes = [...mapaClientes.values()];
+      const clientesVisibles = todosLosClientes.filter(
+        (cliente) => !eliminados.includes(Number(cliente.id)),
+      );
 
-const eliminados =
-  JSON.parse(localStorage.getItem("clientesEliminados")) || [];
-
-const clientesVisibles = todosLosClientes.filter(
-  (cliente) => !eliminados.includes(Number(cliente.id)),
-);
-
-setClientes(clientesVisibles);
+      setClientes(clientesVisibles);
     } catch (err) {
       setError(err.message || "No se pudieron cargar los clientes.");
     } finally {
@@ -163,10 +162,10 @@ setClientes(clientesVisibles);
         <DialogTitle>Alta de Cliente</DialogTitle>
 
         <DialogContent>
-   <FormularioAltaCliente
-  onClienteCreado={actualizarListaClientes}
-  cerrarFormulario={() => setAbrirFormulario(false)}
-/>
+          <FormularioAltaCliente
+            onClienteCreado={actualizarListaClientes}
+            cerrarFormulario={() => setAbrirFormulario(false)}
+          />
         </DialogContent>
       </Dialog>
 
@@ -183,7 +182,7 @@ setClientes(clientesVisibles);
 
       <div className="buscador-titulo">Lista de Clientes</div>
 
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justifyContent="center">
         {clientesFiltrados.map((cliente) => (
           <Grid
             item
@@ -194,88 +193,63 @@ setClientes(clientesVisibles);
             key={cliente.id}
             sx={{
               display: "flex",
+              justifyContent: "center",
             }}
           >
-            <Card
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                height: 320,
-              }}
-            >
-              <CardContent
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  flex: 1,
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: "bold",
-                    mb: 2,
-                    height: 60,
-                    overflow: "hidden",
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {cliente.name?.firstname} {cliente.name?.lastname}
-                </Typography>
+            <Card className="cliente-card">
+              <CardContent className="cliente-card-content">
+                <Box className="cliente-header">
+                  <Avatar className="cliente-avatar">
+                    {cliente.name?.firstname?.charAt(0).toUpperCase()}
+                  </Avatar>
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Box display="flex" gap={1}>
-                    <EmailIcon fontSize="small" />
-                    <Typography variant="body2" noWrap>
-                      {cliente.email}
+                  <Box className="cliente-header-info">
+                    <Typography className="cliente-nombre">
+                      {cliente.name?.firstname} {cliente.name?.lastname}
                     </Typography>
-                  </Box>
 
-                  <Box display="flex" gap={1}>
-                    <PhoneIcon fontSize="small" />
-                    <Typography variant="body2" noWrap>
-                      {cliente.phone}
-                    </Typography>
-                  </Box>
-
-                  <Box display="flex" gap={1}>
-                    <LocationOnIcon fontSize="small" />
-                    <Typography variant="body2" noWrap>
-                      {cliente.address?.city}
-                    </Typography>
+                    <Chip
+                      label={cliente.address?.city}
+                      size="small"
+                      className="cliente-chip"
+                    />
                   </Box>
                 </Box>
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    mt: 2,
-                  }}
-                >
-                  <Tooltip title="Ver ficha completa">
-                    <IconButton
-                      color="primary"
-                      onClick={() =>
-                        navigate(`/clientes/${cliente.id}`, {
-                          state: {
-                            backgroundLocation: location,
-                          },
-                        })
-                      }
-                    >
-                      <FormatListBulletedIcon />
-                    </IconButton>
-                  </Tooltip>
+                <Box className="cliente-linea" />
+
+                <Box className="cliente-info">
+                  <Box className="cliente-item">
+                    <EmailIcon />
+                    <Typography noWrap>{cliente.email}</Typography>
+                  </Box>
+
+                  <Box className="cliente-item">
+                    <PhoneIcon />
+                    <Typography>{cliente.phone}</Typography>
+                  </Box>
+
+                  <Box className="cliente-item">
+                    <LocationOnIcon />
+                    <Typography>{cliente.address?.city}</Typography>
+                  </Box>
                 </Box>
+
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<FormatListBulletedIcon />}
+                  className="cliente-boton formulario-boton"
+                  onClick={() =>
+                    navigate(`/clientes/${cliente.id}`, {
+                      state: {
+                        backgroundLocation: location,
+                      },
+                    })
+                  }
+                >
+                  Ver ficha completa
+                </Button>
               </CardContent>
             </Card>
           </Grid>
