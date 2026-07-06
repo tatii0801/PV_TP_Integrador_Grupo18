@@ -248,7 +248,7 @@ const ListaClientes = () => {
                     })
                   }
                 >
-                  Ver ficha completa
+                 
                 </Button>
               </CardContent>
             </Card>
