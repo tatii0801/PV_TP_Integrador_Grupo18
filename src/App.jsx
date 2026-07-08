@@ -35,42 +35,21 @@ const RutasProtegidas = () => {
   return (
     <>
       <Routes location={backgroundLocation || location}>
- <Route
-  path="/"
-  element={<Navigate to="/dashboard" replace />}
-/>
-<Route
-  path="/dashboard"
-  element={<Dashboard />}
-/>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
-        <Route
-          path="/clientes"
-          element={<ListaClientes />}
-        />
+        <Route path="/clientes" element={<ListaClientes />} />
 
-        <Route
-          path="/clientes/nuevo"
-          element={<div>Alta de Cliente</div>}
-        />
+        <Route path="/clientes/nuevo" element={<div>Alta de Cliente</div>} />
 
-        <Route
-          path="/clientes/:id"
-          element={<DetalleCliente />}
-        />
+        <Route path="/clientes/:id" element={<DetalleCliente />} />
 
-        <Route
-          path="*"
-          element={<div>Error 404 Página no encontrada</div>}
-        />
+        <Route path="*" element={<div>Error 404 Página no encontrada</div>} />
       </Routes>
 
       {backgroundLocation && (
         <Routes>
-          <Route
-            path="/clientes/:id"
-            element={<DetalleCliente />}
-          />
+          <Route path="/clientes/:id" element={<DetalleCliente />} />
         </Routes>
       )}
     </>
@@ -88,47 +67,32 @@ const App = () => {
     setModoOscuro((prev) => !prev);
   };
 
-  const Contenido = ({
-    modoOscuro,
-    cambiarTema,
-  }) => {
+  const Contenido = ({ modoOscuro, cambiarTema }) => {
     const { admin } = useContext(AdminContext);
 
     return (
-<>
-  {admin && (
-    <Header
-      modoOscuro={modoOscuro}
-      cambiarTema={cambiarTema}
-    />
-  )}
+      <>
+        {admin && <Header modoOscuro={modoOscuro} cambiarTema={cambiarTema} />}
 
-  <Routes>
+        <Routes>
+ 
+          <Route
+            path="/login"
+            element={admin ? <Navigate to="/dashboard" replace /> : <Login />}
+          />
 
-    <Route
-      path="/login"
-      element={<Login />}
-    />
+          <Route path="/*" element={<RutasProtegidas />} />
+        </Routes>
 
-    <Route
-      path="/*"
-      element={<RutasProtegidas />}
-    />
-
-  </Routes>
-
-  {admin && <Footer />}
-</>
+        {admin && <Footer />}
+      </>
     );
   };
 
   return (
     <AdminProvider>
       <BrowserRouter>
-        <Contenido
-          modoOscuro={modoOscuro}
-          cambiarTema={cambiarTema}
-        />
+        <Contenido modoOscuro={modoOscuro} cambiarTema={cambiarTema} />
       </BrowserRouter>
     </AdminProvider>
   );
