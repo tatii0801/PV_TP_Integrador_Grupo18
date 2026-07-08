@@ -78,7 +78,7 @@ const App = () => {
  
           <Route
             path="/login"
-            element={admin ? <Navigate to="/dashboard" replace /> : <Login />}
+            element={admin ? <Navigate to="/clientes" replace /> : <Login />}
           />
 
           <Route path="/*" element={<RutasProtegidas />} />
